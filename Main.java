@@ -5,19 +5,22 @@ public class Main {
         {4,4}, {6,2}, {2,6}
     };
 
-    void runExperiment(ConcurrentQueue<Job> queue, int producers, int consumers) throws InterruptedException {
+    static void runExperiment(ConcurrentQueue<Job> queue, int producers, int consumers) throws InterruptedException {
         int jobsPerProducer = TOTAL_JOBS / producers;
+        int jobsPerConsumer = TOTAL_JOBS / consumers;
 
         Thread[] prodThreads = new Thread[producers];
         Thread[] consThreads = new Thread[consumers];
 
         for (int i = 0; i < prodThreads.length; i++) {
-            prodThreads[i] = new Producer(...);
+            prodThreads[i] = new Producer(queue, jobsPerProducer);
         }
 
         for (int i = 0; i < consThreads.length; i++) {
-            consThreads[i] = new Consumer(...);
+            consThreads[i] = new Consumer(queue, jobsPerConsumer);
         }
+
+        long startTime = System.nanoTime();
 
         for (Thread thread : prodThreads) {
             thread.start();
@@ -34,15 +37,29 @@ public class Main {
         for (Thread thread : consThreads) {
             thread.join();
         }
+
+        long endTime = System.nanoTime();
+
+        double execTime = (endTime - startTime) / 1000000;
+        double throughput = TOTAL_JOBS / execTime;
+
+        System.out.println("Producers: " + producers + ", Consumers: " + consumers + ", Time: " + execTime + "s , Throughput: " + throughput + " jobs/s");
     }
+
     public static void main(String[] args) throws InterruptedException {
-        BoundedQueue<Job> bq = new BoundedQueue<Job>(QUEUE_CAPACITY);
-        LockFreeQueue<Job> lfq = new LockFreeQueue<Job>();
         for (int i = 0; i < CONFIGURATIONS.length; i++) {
             int producers = CONFIGURATIONS[i][0];
             int consumers = CONFIGURATIONS[i][1];
 
+            System.out.println();
+            System.out.println("Configuration: " + producers + " Producers / " + consumers + " Consumers");
+
+            ConcurrentQueue<Job> bq = new BoundedQueue<Job>(QUEUE_CAPACITY);
+            System.out.println("Bounded Queue:");
             runExperiment(bq, producers, consumers);
+
+            ConcurrentQueue<Job> lfq = new LockFreeQueue<Job>();
+            System.out.println("Lock-Free Queue:");
             runExperiment(lfq, producers, consumers);
         }
     }
