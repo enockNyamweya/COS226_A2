@@ -12,11 +12,10 @@ completed successfully.
 
 Observations:
 The measured results show that the lock-free queue achieved
-higher throughput than the bounded queue in all 3 tested
-configurations. The bounded queue achieved its highest
-throughput with 4 producers and 4 consumers, while the 
-lock-free queue achieved its highest throughput with 2
-producers and 6 consumers.
+higher throughput than the bounded queue in all 3 configurations. 
+The bounded queue achieved its highest throughput with 4 producers
+and 4 consumers, while the lock-free queue achieved its highest 
+throughput with 2 producers and 6 consumers.
 
 The 6-producer/2-consumer configuration produced the lowest 
 measured bounded-queue throughput, while the 2-producer/6-consumer 
