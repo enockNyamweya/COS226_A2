@@ -46,7 +46,7 @@ public class BoundedQueue<T> implements ConcurrentQueue<T> {
                 this.notFullCondition.await();
 
             Node e = new Node(item);
-            this.tail.next = this.tail;
+            this.tail.next = e;
             this.tail = e;
 
             // the queue is no longer ampty so dequeuers can dequeue from the queue
@@ -97,7 +97,7 @@ public class BoundedQueue<T> implements ConcurrentQueue<T> {
         if (wakeEnqueuers) {
             this.enqLock.lock();
             try {
-                this.notFullCondition.signal();
+                this.notFullCondition.signalAll();
 
             } finally {
                 this.enqLock.unlock();

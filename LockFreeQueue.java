@@ -1,16 +1,20 @@
 
 import java.util.concurrent.atomic.AtomicReference;
 
-public class LockFreeQueue<T> {
+public class LockFreeQueue<T> implements ConcurrentQueue<T> {
     AtomicReference<Node> head, tail;
 
     public LockFreeQueue() {
+        Node sentinel = new Node(null);
+        head = new AtomicReference<>(sentinel);
+        tail = new AtomicReference<>(sentinel);
     }
 
+    @Override
     public void enq(T item) {
         Node e = new Node(item);
 
-        // enqueuing alwsys happens because the queue is unbounded
+        // enqueuing always happens because the queue is unbounded
         while (true) {
             Node last = this.tail.get();
             Node next = last.next.get();
@@ -28,7 +32,8 @@ public class LockFreeQueue<T> {
         }
     }
 
-    public T deq() throws EmptyException {
+    @Override
+    public T deq() {
         // must throw an exception if the que is empty
         while (true) {
             Node first = this.head.get();
@@ -38,7 +43,7 @@ public class LockFreeQueue<T> {
             if (first == this.head.get()) {
                 if (first == last) {
                     if (next == null) {
-                        throw new EmptyException();
+                        return null;
                     }
 
                     this.tail.compareAndSet(last, next);
@@ -47,9 +52,7 @@ public class LockFreeQueue<T> {
                     if (this.head.compareAndSet(first, next))
                         return value;
                 }
-
             }
-
         }
     }
 
@@ -59,7 +62,7 @@ public class LockFreeQueue<T> {
 
         public Node(T value) {
             this.value = value;
-            this.next = new AtomicReference<Node>(null);
+            this.next = new AtomicReference<>(null);
         }
     }
 }

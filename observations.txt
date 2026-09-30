@@ -1,0 +1,23 @@
+Queue	        Producers   Consumers	Execution Time (s)	Throughput (jobs/s)
+Bounded Queue	  4	          4	        0.1533	            78,253
+Lock-Free Queue	  4	          4	        0.0620	            193,693
+Bounded Queue	  6	          2	        0.2575	            46,609
+Lock-Free Queue	  6	          2	        0.0201	            597,783
+Bounded Queue	  2	          6	        0.2251	            53,314
+Lock-Free Queue	  2	          6	        0.0183	            654,065
+
+For every experiment, exactly 12,000 jobs were produced and
+processed, confirming that the required workload was 
+completed successfully.
+
+Observations:
+The measured results show that the lock-free queue achieved
+higher throughput than the bounded queue in all 3 tested
+configurations. The bounded queue achieved its highest
+throughput with 4 producers and 4 consumers, while the 
+lock-free queue achieved its highest throughput with 2
+producers and 6 consumers.
+
+The 6-producer/2-consumer configuration produced the lowest 
+measured bounded-queue throughput, while the 2-producer/6-consumer 
+configuration produced the highest measured lock-free throughput.

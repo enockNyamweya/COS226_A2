@@ -38,12 +38,22 @@ public class Main {
             thread.join();
         }
 
+        int totalProcessed = 0;
+
+        for (int i = 0; i < consThreads.length; i++) {
+            Consumer cons = (Consumer) consThreads[i];
+            totalProcessed += cons.getJobsProcessed();
+        }
+
+        System.out.println("Produced: " + TOTAL_JOBS);
+        System.out.println("Processed: " + totalProcessed);
+
         long endTime = System.nanoTime();
 
-        double execTime = (endTime - startTime) / 1000000;
+        double execTime = (endTime - startTime) / 1000000000.0;
         double throughput = TOTAL_JOBS / execTime;
 
-        System.out.println("Producers: " + producers + ", Consumers: " + consumers + ", Time: " + execTime + "s , Throughput: " + throughput + " jobs/s");
+        System.out.println("Producers: " + producers + ", Consumers: " + consumers + ", Time: " + execTime + " seconds, Throughput: " + throughput + " jobs/s");
     }
 
     public static void main(String[] args) throws InterruptedException {
